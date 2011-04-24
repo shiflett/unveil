@@ -74,8 +74,8 @@ function ls($dir) {
         $info .= (($perms & 0x0001) ? (($perms & 0x0200) ? 't' : 'x') : (($perms & 0x0200) ? 'T' : '-'));
 
         $line = str_pad($info, 15);
-        $line .= str_pad($owner, 9);
-        $line .= str_pad($group, 9);
+        $line .= str_pad($owner, 12);
+        $line .= str_pad($group, 12);
         $line .= str_pad($size, 10);
         $line .= str_pad($modified, 17);
 
