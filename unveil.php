@@ -2,10 +2,10 @@
 <html dir="ltr" lang="en">
 <head>
 <meta charset="utf-8" />
-<title>[unveil]</title>
+<title>Unveil, a simple filesystem browser</title>
 </head>
 <body>
-<p>Powered by <a href="https://github.com/shiflett/unveil">unveil</a>, a simple filesystem browser by <a href="http://shiflett.org/">Chris Shiflett</a>.</p>
+<p>Powered by <a href="https://github.com/shiflett/unveil">Unveil</a>, a simple filesystem browser by <a href="http://shiflett.org/">Chris Shiflett</a>.</p>
 <hr />
 <pre>
 <?php
@@ -30,7 +30,6 @@ if (isset($_GET['dir'])) {
 <hr />
 </body>
 </html>
-
 <?php
 
 function ls($dir) {
