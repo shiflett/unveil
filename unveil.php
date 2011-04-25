@@ -159,8 +159,13 @@ function cat($file) {
             echo htmlentities(file_get_contents($file), ENT_QUOTES, 'UTF-8');
             break;
         default:
-            echo "<p>Unsupported file type: $info</p>";
-            break;
+            switch ($info) {
+                case 'application/xml':
+                    echo htmlentities(file_get_contents($file), ENT_QUOTES, 'UTF-8');
+                    break;
+                default:
+                    echo "<p>Unsupported file type: $info</p>";
+            }
     } 
 }
 
