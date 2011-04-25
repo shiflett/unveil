@@ -4,7 +4,7 @@ Unveil, a simple filesystem browser and security testing tool
 Requirements
 ------------
 
-- [PHP](http://php.net/)
+- [PHP](http://php.net/) 5.3
 
 Usage
 -----
