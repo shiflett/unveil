@@ -2,10 +2,10 @@
 <html dir="ltr" lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Unveil, a simple filesystem browser</title>
+<title>Unveil, a simple filesystem browser and security testing tool</title>
 </head>
 <body>
-<p>Powered by <a href="https://github.com/shiflett/unveil">Unveil</a>, a simple filesystem browser by <a href="http://shiflett.org/">Chris Shiflett</a>.</p>
+<p>Powered by <a href="https://github.com/shiflett/unveil">Unveil</a>, a simple filesystem browser and security testing tool by <a href="http://shiflett.org/">Chris Shiflett</a>.</p>
 <hr />
 <pre>
 <?php
