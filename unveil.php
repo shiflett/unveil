@@ -7,11 +7,11 @@ if (!ini_get('date.timezone')) {
 
 // Create a descriptive page title.
 if (isset($_GET['dir'])) {
-    $title = "ls {$_GET['dir']}";
+    $title = $_GET['dir'];
 } elseif (isset($_GET['file'])) {
-    $title = "cat {$_GET['file']}";
+    $title = $_GET['file'];
 } else {
-    $title = 'ls /';
+    $title = '/';
 }
 
 ?>
@@ -22,7 +22,7 @@ if (isset($_GET['dir'])) {
 <title>Unveil: <?php echo $title; ?></title>
 </head>
 <body>
-<h1><?php echo $title; ?></h1>
+<h1>Unveil: <?php echo $title; ?></h1>
 <hr />
 <pre>
 <?php
@@ -146,7 +146,22 @@ function ls($dir) {
 }
 
 function cat($file) {
-    echo htmlentities(file_get_contents($file), ENT_QUOTES, 'UTF-8');
+    // This requires PHP 5.3.
+    $info = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $file);
+    list($type, $subtype) = explode('/', $info);
+
+    switch ($type) {
+        case 'image':
+            $data = base64_encode(file_get_contents($file));
+            echo "<p><img src=\"data:{$info};base64,{$data}\" /></p>";
+            break;
+        case 'text':
+            echo htmlentities(file_get_contents($file), ENT_QUOTES, 'UTF-8');
+            break;
+        default:
+            echo "<p>Unsupported file type: $info</p>";
+            break;
+    } 
 }
 
 ?>
