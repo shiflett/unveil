@@ -1,11 +1,28 @@
+<?php
+
+// Set default timezone if it's not set in php.ini.
+if (!ini_get('date.timezone')) {
+    date_default_timezone_set('America/New_York');
+}
+
+// Create a descriptive page title.
+if (isset($_GET['dir'])) {
+    $title = "ls {$_GET['dir']}";
+} elseif (isset($_GET['file'])) {
+    $title = "cat {$_GET['file']}";
+} else {
+    $title = 'ls /';
+}
+
+?>
 <!DOCTYPE html>
 <html dir="ltr" lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Unveil, a simple filesystem browser and security testing tool</title>
+<title>Unveil: <?php echo $title; ?></title>
 </head>
 <body>
-<p>Powered by <a href="https://github.com/shiflett/unveil">Unveil</a>, a simple filesystem browser and security testing tool by <a href="http://shiflett.org/">Chris Shiflett</a>.</p>
+<h1><?php echo $title; ?></h1>
 <hr />
 <pre>
 <?php
@@ -21,13 +38,7 @@ if (isset($_GET['dir'])) {
 ?>
 </pre>
 <hr />
-<pre>
-<?php $safe = ini_get('safe_mode'); ?>
-[<code>safe_mode</code>] [<code><?php echo $safe; ?></code>]
-<?php $base = ini_get('open_basedir'); ?>
-[<code>open_basedir</code>] [<code><?php echo $base; ?></code>]
-</pre>
-<hr />
+<p>Powered by <a href="https://github.com/shiflett/unveil">Unveil</a>, a simple filesystem browser and security testing tool by <a href="http://shiflett.org/">Chris Shiflett</a>.</p>
 </body>
 </html>
 <?php
@@ -35,13 +46,26 @@ if (isset($_GET['dir'])) {
 function ls($dir) {
     $handle = dir($dir);
     while ($filename = $handle->read()) {
-        $size = filesize("{$dir}{$filename}");
-        $perms = fileperms("{$dir}{$filename}");
-        $owner = posix_getpwuid(fileowner("{$dir}{$filename}"));
-        $owner = $owner['name'];
-        $group = posix_getgrgid(filegroup("{$dir}{$filename}"));
-        $group = $group['name'];
-        $modified = date('Y-m-d H:i', filemtime("{$dir}{$filename}"));
+        $fullname = "{$dir}{$filename}";
+
+        if (is_link($fullname)) {
+            $link = lstat($fullname);
+            $size = $link['size'];
+            $perms = $link['mode'];
+            $owner = posix_getpwuid($link['uid']);
+            $owner = $owner['name'];
+            $group = posix_getgrgid($link['guid']);
+            $group = $group['name'];
+            $modified = date('Y-m-d H:i', $link['mtime']);
+        } else {
+            $size = filesize($fullname);
+            $perms = fileperms($fullname);
+            $owner = posix_getpwuid(fileowner($fullname));
+            $owner = $owner['name'];
+            $group = posix_getgrgid(filegroup($fullname));
+            $group = $group['name'];
+            $modified = date('Y-m-d H:i', filemtime($fullname));
+        }
 
         if (($perms & 0xC000) == 0xC000) {
             $info = 's';
@@ -95,15 +119,21 @@ function ls($dir) {
                 $parent = implode('/', $parent);
                 $line .= "<a href=\"{$_SERVER['PHP_SELF']}?dir={$parent}\">{$filename}/</a>";
             }
-        } elseif (is_dir("{$dir}{$filename}")) {
-            if (is_readable("{$dir}{$filename}")) {
-                $line .= "<a href=\"{$_SERVER['PHP_SELF']}?dir={$dir}{$filename}/\">{$filename}/</a>";
+        } elseif (is_link($fullname)) {
+            if (is_readable($fullname)) {
+                $line .= "<a href=\"{$_SERVER['PHP_SELF']}?dir={$fullname}/\">{$filename}@</a>";
+            } else {
+                $line .= "{$filename}@";
+            }
+        } elseif (is_dir($fullname)) {
+            if (is_readable($fullname)) {
+                $line .= "<a href=\"{$_SERVER['PHP_SELF']}?dir={$fullname}/\">{$filename}/</a>";
             } else {
                 $line .= "{$filename}/";
             }
         } else {
-            if (is_readable("{$dir}{$filename}")) {
-                $line .= "<a href=\"{$_SERVER['PHP_SELF']}?file={$dir}{$filename}\">{$filename}</a>";
+            if (is_readable($fullname)) {
+                $line .= "<a href=\"{$_SERVER['PHP_SELF']}?file={$fullname}\">{$filename}</a>";
             } else {
                 $line .= $filename;
             }
