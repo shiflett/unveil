@@ -1,5 +1,5 @@
-Unveil, a simple filesystem browser
-===================================
+Unveil, a simple filesystem browser and security testing tool
+=============================================================
 
 Requirements
 ------------
