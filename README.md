@@ -15,7 +15,7 @@ browser.
 BE SURE TO REMOVE THIS TOOL WHEN YOU'RE FINISHED TESTING.
 
 The output is very similar to what `ls -l` looks like. For example, here's what
-a listing of my web site looks like:
+a listing of my web site's home directory looks like:
 
     drwxrwxr-x     www-data www-data 4096      2011-03-29 13:16 ../
     drwxr-xr-x     shiflett shiflett 4096      2011-04-20 11:35 app/
@@ -28,10 +28,19 @@ a listing of my web site looks like:
     drwxr-xr-x     shiflett shiflett 4096      2011-03-31 11:54 inc/
     -rw-r--r--     shiflett shiflett 727       2010-07-13 18:50 VERSION
 
-Unveil is meant to highlight some of the security risks of shared hosting. If
-your copy of `unveil.php` is able to show you the contents of other people's
-files, then they can also see yours, so hiding passwords in those files is not
-sufficient.
+When you first visit `unveil.php`, you're shown a listing of `/`. The names of
+files and directories that you can read are links that you can follow to explore
+the filesystem.
 
-I'll provide more information later. For now, I just want to release this for
-those who might find it useful.
+On shared hosts, it is common for the web server to run as the same user for all
+hosts. This typically means that all files the web server needs to be able to
+read can also be read by anyone else on the server. Unveil is a tool to help
+highlight these types of risks.
+
+> Note: The `safe_mode` configuration directive can limit the usefulness of this
+> tool, but it does not protect you on a shared host, because an attacker can
+> simply use another language. Partly due to the false sense of security it
+> provides, `safe_mode` is being deprecated.
+
+For more information and background about Unveil, read my article on
+[shared hosting](http://shiflett.org/articles/shared-hosting).
