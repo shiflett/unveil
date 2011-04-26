@@ -149,6 +149,7 @@ function cat($file) {
     // This requires PHP 5.3.
     $info = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $file);
     list($type, $subtype) = explode('/', $info);
+    $contents = file_get_contents($file);
 
     switch ($type) {
         case 'image':
@@ -156,12 +157,14 @@ function cat($file) {
             echo "<p><img src=\"data:{$info};base64,{$data}\" /></p>";
             break;
         case 'text':
-            echo htmlentities(file_get_contents($file), ENT_QUOTES, 'UTF-8');
+            $contents = wordwrap($contents, 120, "\n    ", TRUE);
+            echo htmlentities($contents, ENT_QUOTES, 'UTF-8');
             break;
         default:
             switch ($info) {
                 case 'application/xml':
-                    echo htmlentities(file_get_contents($file), ENT_QUOTES, 'UTF-8');
+                    $contents = wordwrap($contents, 120, "\n    ", TRUE);
+                    echo htmlentities($contents, ENT_QUOTES, 'UTF-8');
                     break;
                 default:
                     echo "<p>Unsupported file type: $info</p>";
