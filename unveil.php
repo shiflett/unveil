@@ -5,6 +5,9 @@ if (!ini_get('date.timezone')) {
     date_default_timezone_set('America/New_York');
 }
 
+// Hide warnings.
+ini_set('error_reporting', E_ERROR);
+
 // Create a descriptive page title.
 if (isset($_GET['dir'])) {
     $title = $_GET['dir'];
